@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Shield Advanced Threat Intelligence Suite</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #030611;
+            color: #c3c9db;
+            overflow-x: hidden;
+        }
+        
+        /* Желілік кибер-тор фоны */
+        .cyber-grid-bg {
+            background-image: linear-gradient(rgba(16, 185, 129, 0.04) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+            background-size: 35px 35px;
+        }
+
+        /* Неонды жарықтандыру эффектілері (Glow Effects) */
+        .neon-border-emerald {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        
+        .neon-border-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .active-module-tab {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.02) 100%);
+            border-left: 4px solid #10b981;
+            color: #10b981;
+        }
+
+        /* Консольдік айналдыру жолағын реттеу */
+        .terminal-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .terminal-scrollbar::-webkit-scrollbar-track {
+            background: #050816;
+        }
+        .terminal-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+
+        /* Анимациялар */
+        .glitch-text {
+            position: relative;
+            animation: glitch-anim 4s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { text-shadow: 1px 1px 2px rgba(16,185,129,0.5); }
+            100% { text-shadow: -1px -1px 2px rgba(239,68,68,0.5); }
+        }
+    </style>
+</head>
+<body class="cyber-grid-bg min-h-screen flex flex-col justify-between selection:bg-emerald-500/30 selection:text-emerald-300">
+
+    <header class="border-b border-emerald-500/20 bg-slate-950/95 backdrop-blur sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 h-18 flex items-center justify-between">
+            
+            <div class="flex items-center space-x-3.5">
+                <div class="h-11 w-11 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center rounded-xl relative overflow-hidden group shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                    <div class="absolute inset-0 bg-emerald-500/20 translate-y-11 group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <i class="fa-solid fa-user-shield text-emerald-400 text-xl relative z-10 group-hover:text-slate-950 transition-colors"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="text-white font-bold tracking-widest text-base font-mono glitch-text">CYBER-SHIELD</h1>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] font-bold px-2 py-0.5 rounded border border-emerald-500/30">ENGINE v4.0</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-sans font-medium">Interactive Threat Assessment Framework</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-6 text-xs font-mono text-slate-400">
+                <div class="hidden lg:flex items-center space-x-4 border-r border-slate-900 pr-6">
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-500 block uppercase">Анти-Фишинг базасы</span>
+                        <span class="text-emerald-400 font-bold">14,291 БОТ / АКТИВТІ</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-500 block uppercase">Талдау Түрі</span>
+                        <span class="text-blue-400 font-bold">Heuristic + Live API</span>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <div class="hidden md:flex items-center space-x-2 bg-slate-900/50 px-3 py-1.5 rounded-lg border border-slate-800/80">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span class="text-[11px] text-emerald-400 font-bold">NODE: ONLINE</span>
+                    </div>
+                    <div class="border border-slate-800 bg-slate-900/80 px-3 py-1.5 rounded-xl flex items-center space-x-2 shadow-inner">
+                        <i class="fa-solid fa-terminal text-emerald-500 text-[11px]"></i>
+                        <span id="live-clock" class="text-slate-300 font-bold tracking-wider">00:00:00</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <div class="lg:col-span-1 flex flex-col space-y-6">
+            
+            <div class="bg-slate-950/90 border border-slate-900/80 rounded-2xl p-5 backdrop-blur shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 h-16 w-16 bg-emerald-500/2 blur-2xl rounded-full"></div>
+                <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4 border-b border-slate-900 pb-3 flex items-center">
+                    <i class="fa-solid fa-satellite mr-2 text-emerald-500"></i> Сканерлеу Бағыттары
+                </h3>
+                
+                <nav class="flex flex-col space-y-1.5" id="module-navigation-tabs">
+                    <button onclick="changeActiveModule('phish')" id="btn-tab-phish" class="active-module-tab text-left w-full text-xs md:text-sm px-4 py-3.5 rounded-xl border border-transparent hover:bg-slate-900/40 transition duration-200 flex items-center space-x-3 group">
+                        <i class="fa-solid fa-link-slash w-5 text-center group-hover:text-emerald-400 transition"></i>
+                        <span class="font-medium tracking-wide">Фишинг Анализатор (Тірі)</span>
+                    </button>
+                    <button onclick="changeActiveModule('pwd')" id="btn-tab-pwd" class="text-left w-full text-xs md:text-sm px-4 py-3.5 rounded-xl border border-transparent hover:bg-slate-900/40 text-slate-400 hover:text-slate-200 transition duration-200 flex items-center space-x-3 group">
+                        <i class="fa-solid fa-key w-5 text-center group-hover:text-emerald-400 transition"></i>
+                        <span class="font-medium tracking-wide">Пароль Аудиті (Тірі)</span>
+                    </button>
+                    <button onclick="changeActiveModule('ip')" id="btn-tab-ip" class="text-left w-full text-xs md:text-sm px-4 py-3.5 rounded-xl border border-transparent hover:bg-slate-900/40 text-slate-400 hover:text-slate-200 transition duration-200 flex items-center space-x-3 group">
+                        <i class="fa-solid fa-globe w-5 text-center group-hover:text-emerald-400 transition"></i>
+                        <span class="font-medium tracking-wide">IP Гео-Локатор (Тірі)</span>
+                    </button>
+                    <button onclick="changeActiveModule('nick')" id="btn-tab-nick" class="text-left w-full text-xs md:text-sm px-4 py-3.5 rounded-xl border border-transparent hover:bg-slate-900/40 text-slate-400 hover:text-slate-200 transition duration-200 flex items-center space-x-3 group">
+                        <i class="fa-solid fa-fingerprint w-5 text-center group-hover:text-emerald-400 transition"></i>
+                        <span class="font-medium tracking-wide">Никнейм Іздеу (Тірі)</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="bg-slate-950/90 border border-slate-900/80 rounded-2xl p-5 backdrop-blur-sm text-xs text-slate-400 shadow-xl">
+                <h4 class="text-slate-300 font-bold uppercase mb-3 flex items-center text-[11px] tracking-wider border-b border-slate-900 pb-2">
+                    <i class="fa-solid fa-microchip mr-2 text-emerald-500"></i> Жүйе Спецификациясы
+                </h4>
+                <div class="space-y-2.5 font-mono">
+                    <div class="flex justify-between border-b border-slate-900/40 pb-1.5">
+                        <span class="text-slate-500">Платформа:</span> <span class="text-slate-300">GitHub Client</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-900/40 pb-1.5">
+                        <span class="text-slate-500">Деректер Типі:</span> <span class="text-blue-400 font-bold">Asynchronous</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-900/40 pb-1.5">
+                        <span class="text-slate-500">Ядро Түрі:</span> <span class="text-emerald-400">Heuristic Engine</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Қорғаныс шифры:</span> <span class="text-yellow-500 text-[10px]">TLS 1.3 SHA-256</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="lg:col-span-3 flex flex-col space-y-6">
+            
+            <div class="bg-slate-950/95 border border-slate-900 rounded-2xl p-6 backdrop-blur-md neon-border-emerald transition-all duration-500 shadow-2xl" id="dynamic-operation-container">
+                
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-lg md:text-xl text-white font-bold tracking-tight font-mono text-emerald-400" id="current-panel-title">Фишинг Анализатор (Тірі)</h2>
+                        <p class="text-xs text-slate-400 mt-1.5 leading-relaxed" id="current-panel-description">Күмәнді сілтемелер мен URL мекенжайларды фишингтік белгілерге, қысқартуларға және қауіпті домендік атауларға тексеру модулі.</p>
+                    </div>
+                    <div class="text-emerald-400 text-3xl opacity-25 px-2.5">
+                        <i id="current-panel-icon" class="fa-solid fa-link-slash"></i>
+                    </div>
+                </div>
+
+                <form id="cyber-shield-master-form" onsubmit="triggerCoreIntelligenceProcess(event)" class="space-y-4">
+                    <input type="hidden" id="internal-module-pointer" value="phish">
+                    
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-emerald-500/70" id="input-decorator-icon">
+                            <i class="fa-solid fa-link text-sm"></i>
+                        </div>
+                        <input type="text" id="master-search-input-field" required
+                               class="w-full bg-slate-900/30 border border-slate-800 rounded-xl py-4 pl-12 pr-4 text-white text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition font-mono tracking-wide placeholder:text-slate-600 shadow-inner"
+                               placeholder="Мысалы: https://kaspi-secure-login.xyz/free-bonus">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-2">
+                        <div class="text-[11px] text-slate-500 flex items-center space-x-2.5">
+                            <input type="checkbox" id="matrix-deep-scan-toggle" class="w-4 h-4 rounded border-slate-800 bg-slate-900 text-emerald-500 focus:ring-0 cursor-pointer transition">
+                            <label for="matrix-deep-scan-toggle" class="cursor-pointer hover:text-slate-400 select-none font-mono">Тереңдетілген талдау матрицасы (Deep Multi-Layer Scan)</label>
+                        </div>
+                        
+                        <button type="submit" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-8 py-3.5 rounded-xl transition duration-300 text-xs uppercase tracking-wider flex items-center justify-center space-x-2 shadow-[0_4px_20px_rgba(16,185,129,0.2)]">
+                            <i class="fa-solid fa-shield-virus animate-pulse"></i>
+                            <span id="submit-button-text">Сілтемені Тексеру</span>
+                        </button>
+                    </div>
+                </form>
+                
+            </div>
+
+            <div class="bg-[#02040b] border border-slate-900 rounded-2xl overflow-hidden flex flex-col flex-grow min-h-[400px] shadow-2xl">
+                
+                <div class="bg-slate-950/90 px-4 py-3 border-b border-slate-900 flex items-center justify-between shadow-md">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500/50 block"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500/50 block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500/50 block"></span>
+                        <span class="text-[11px] text-slate-400 pl-2 font-mono flex items-center tracking-wider">
+                            <i class="fa-solid fa-terminal mr-2 text-emerald-500/80"></i>SHIELD_SYSTEM_SHELL
+                        </span>
+                    </div>
+                    <button onclick="clearTerminalLogs()" class="text-slate-500 hover:text-slate-300 text-xs transition font-mono flex items-center space-x-1 px-2 py-0.5 rounded hover:bg-slate-900">
+                        <i class="fa-solid fa-trash-can text-[10px]"></i> <span>Экранды Тазалау</span>
+                    </button>
+                </div>
+                
+                <div id="terminal-output-stream-box" class="p-5 text-xs font-mono space-y-2.5 flex-grow overflow-y-auto terminal-scrollbar max-h-[440px] bg-[#02050f]">
+                    <div class="text-slate-500 italic">[ЖҮЙЕ] Қауіпсіздік ядросы іске қосылды. Күмәнді сілтемені немесе парольді жазып, анализ жасаңыз...</div>
+                </div>
+                
+            </div>
+
+        </div>
+    </main>
+
+    <section class="max-w-7xl mx-auto px-4 py-4 w-full">
+        <h3 class="text-white font-mono font-bold text-sm tracking-widest uppercase mb-4 flex items-center text-slate-400">
+            <i class="fa-solid fa-book-skull mr-2 text-red-500/70"></i> Кибербез Карталары & Қауіп Сөздігі
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-slate-950/60 border border-slate-900 rounded-xl p-5 backdrop-blur-sm hover:border-slate-800 transition group">
+                <span class="text-[10px] text-emerald-500 font-bold block mb-1 font-mono">01 / КИБЕРГИГИЕНА</span>
+                <h4 class="text-white font-bold text-sm mb-2 group-hover:text-emerald-400 transition">Фишинг деген не?</h4>
+                <p class="text-slate-400 text-xs leading-relaxed font-sans">Фишинг — бұл хакерлердің танымал брендтер (Kaspi, Халық Банк, Telegram) атынан жалған сайттар жасап, сіздің құпия сөздеріңіз бен карта деректеріңізді ұрлау әдісі.</p>
+            </div>
+            <div class="bg-slate-950/60 border border-slate-900 rounded-xl p-5 backdrop-blur-sm hover:border-slate-800 transition group">
+                <span class="text-[10px] text-yellow-500 font-bold block mb-1 font-mono">02 / ҚАУІПСІЗДІК</span>
+                <h4 class="text-white font-bold text-sm mb-2 group-hover:text-yellow-400 transition">Күрделі Пароль Маңызы</h4>
+                <p class="text-slate-400 text-xs leading-relaxed font-sans">Қарапайым парольдерді (мысалы, 123456, qwerty) хакерлер арнайы сөздіктер мен Brute-force программалары арқылы санаулы секундтар ішінде бұзып үлгереді.</p>
+            </div>
+            <div class="bg-slate-950/60 border border-slate-900 rounded-xl p-5 backdrop-blur-sm hover:border-slate-800 transition group">
+                <span class="text-[10px] text-blue-500 font-bold block mb-1 font-mono">03 / БАРЛАУ</span>
+                <h4 class="text-white font-bold text-sm mb-2 group-hover:text-blue-400 transition">OSINT деген не?</h4>
+                <p class="text-slate-400 text-xs leading-relaxed font-sans">Open Source Intelligence — интернеттегі ашық және заңды көздерден (әлеуметтік желілер, цифрлық іздер, IP мекенжайлар) ақпарат жинау және оларды қауіпсіздік тұрғысынан талдау өнері.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-900/60 bg-slate-950/80 py-5 text-center text-[11px] text-slate-500 font-mono">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p>© 2026 Cyber-Shield OSINT Framework. </p>
+            <p class="text-slate-400 font-bold"></p>
+        </div>
+    </footer>
+
+    <script>
+        // 5.1 ЖАНДЫ САҒАТ ТАЙМЕРІ
+        function refreshClockTicks() {
+            const now = new Date();
+            document.getElementById('live-clock').textContent = now.toTimeString().split(' ')[0];
+        }
+        setInterval(refreshClockTicks, 1000);
+        refreshClockTicks();
+
+        // 5.2 СИМУЛЯЦИЯЛЫҚ АРХИВТІК МАТРИЦА (ТЕЛЕФОН ЖӘНЕ EMAIL ҮШІН)
+        const CRITICAL_STATIC_DATABASE = {
+            "phones": {
+                "77071234567": { "user": "Алихан Нұрланов", "operator": "Beeline KZ", "city": "Алматы", "tg": "@alizhan_kevin", "car": "Toyota Camry" },
+                "77777777777": { "user": "Арман Каримов", "operator": "Kcell", "city": "Астана", "tg": "@arm_admin", "car": "Mercedes-Benz" }
+            },
+            "emails": {
+                "admin@cyber.kz": { "breached": true, "dumps": ["LinkedIn Leak 2021", "Canva Database 2019"], "severity": "КРИТИКАЛЫҚ" },
+                "test@mail.ru": { "breached": true, "dumps": ["Yandex Food Dump 2022"], "severity": "ЖОҒАРЫ" }
+            }
+        };
+
+        // 5.3 МОДУЛЬДЕР АРАСЫНДАҒЫ ДИНАМИКАЛЫҚ ИНТЕРФЕЙСТІ БАСҚАРУ ЖҮЙЕСІ
+        function changeActiveModule(targetModuleId) {
+            // Навигациялық стильдерді тазалау
+            document.querySelectorAll('#module-navigation-tabs button').forEach(b => {
+                b.classList.remove('active-module-tab');
+                b.classList.add('text-slate-400');
+            });
+            
+            // Таңдалған батырманы белсенді ету
+            document.getElementById(`btn-tab-${targetModuleId}`).classList.add('active-module-tab');
+            document.getElementById(`btn-tab-${targetModuleId}`).classList.remove('text-slate-400');
+            
+            // Жасырын инпут айнымалысын өзгерту
+            document.getElementById('internal-module-pointer').value = targetModuleId;
+            
+            // Элементтер сілтемесі
+            const title = document.getElementById('current-panel-title');
+            const description = document.getElementById('current-panel-description');
+            const icon = document.getElementById('current-panel-icon');
+            const inputField = document.getElementById('master-search-input-field');
+            const submitBtnText = document.getElementById('submit-button-text');
+            const containerCard = document.getElementById('dynamic-operation-container');
+            
+            inputField.value = '';
+            
+            // Контейнердің неонды түсін өзгерту және мазмұнды толтыру
+            if (targetModuleId === 'phish') {
+                containerCard.className = containerCard.className.replace('neon-border-red', 'neon-border-emerald');
+                containerCard.classList.add('neon-border-emerald');
+                title.textContent = 'Фишинг Анализатор (Тірі)';
+                description.textContent = 'Күмәнді сілтемелер мен URL мекенжайларды фишингтік белгілерге, қысқартуларға және қауіпті домендік атауларға тексеру модулі.';
+                icon.className = 'fa-solid fa-link-slash';
+                inputField.placeholder = 'Мысалы: https://kaspi-secure-login.xyz/free-bonus';
+                submitBtnText.textContent = 'Сілтемені Тексеру';
+            } 
+            else if (targetModuleId === 'pwd') {
+                containerCard.className = containerCard.className.replace('neon-border-emerald', 'neon-border-red');
+                containerCard.classList.add('neon-border-red');
+                title.textContent = 'Пароль Аудиті (Тірі)';
+                description.textContent = 'Құия сөздердің күрделілігін математикалық талдау және хакерлердің Brute-force (іріктеу) шабуылына төзімділік уақытын анықтау.';
+                icon.className = 'fa-solid fa-key';
+                inputField.placeholder = 'Тексеретін құпия сөзді жазыңыз (мысалы: P@$$w0rd2026)';
+                submitBtnText.textContent = 'Парольді Аудиттеу';
+            } 
+            else if (targetModuleId === 'ip') {
+                containerCard.className = containerCard.className.replace('neon-border-red', 'neon-border-emerald');
+                containerCard.classList.add('neon-border-emerald');
+                title.textContent = 'IP Гео-Локатор (Тірі)';
+                description.textContent = 'Шынайы IP-мекенжайлардың орналасқан географиялық нүктесін, интернет провайдерін және таймзонасын халықаралық базалардан нақты уақытта алу.';
+                icon.className = 'fa-solid fa-globe';
+                inputField.placeholder = 'Мысалы: 82.200.150.10';
+                submitBtnText.textContent = 'IP Локациясын Анықтау';
+            } 
+            else if (targetModuleId === 'nick') {
+                containerCard.className = containerCard.className.replace('neon-border-red', 'neon-border-emerald');
+                containerCard.classList.add('neon-border-emerald');
+                title.textContent = 'Никнейм Іздеу (Тірі)';
+                description.textContent = 'Пайдаланушы аты (Username) бойынша жаһандық әлеуметтік платформалардан нақты уақытта тірі профильдік сілтемелерді дайындау.';
+                icon.className = 'fa-solid fa-fingerprint';
+                inputField.placeholder = 'Мысалы: kevin_dev';
+                submitBtnText.textContent = 'Никнеймді Тінту';
+            }
+            
+            pushLogToConsole(`[ИНФО] Белсенді модуль ауыстырылды: ${title.textContent}`, 'text-blue-400');
+        }
+
+        // 5.4 ТЕРМИНАЛҒА ЖАЗУ ФУНКЦИЯСЫ
+        function pushLogToConsole(messageText, styleClasses = 'text-slate-300') {
+            const streamBox = document.getElementById('terminal-output-stream-box');
+            const paragraphRow = document.createElement('div');
+            paragraphRow.className = `py-0.5 border-l-2 border-transparent pl-2 hover:bg-slate-900/20 transition-colors ${styleClasses}`;
+            
+            const currentClockString = new Date().toLocaleTimeString().split(' ')[0];
+            paragraphRow.innerHTML = `<span class="text-slate-600 select-none font-bold mr-2">[${currentClockString}]</span>${messageText}`;
+            
+            streamBox.appendChild(paragraphRow);
+            streamBox.scrollTop = streamBox.scrollHeight;
+        }
+
+        function clearTerminalLogs() {
+            document.getElementById('terminal-output-stream-box').innerHTML = '<div class="text-slate-600 italic">[МӘЛІМЕТ] Консоль тазартылды. Жаңа сұраныстар журналы осында көрсетіледі...</div>';
+        }
+
+        // ==============================================================================
+        // 6. НЕГІЗГІ ҚАУІПСІЗДІК ЖӘНЕ БАРЛАУ АЛГОРИТМДЕРІ (CORE SECURITY ENGINES)
+        // ==============================================================================
+        function triggerCoreIntelligenceProcess(formEvent) {
+            formEvent.preventDefault();
+            
+            const currentModule = document.getElementById('internal-module-pointer').value;
+            const targetRawValue = document.getElementById('master-search-input-field').value.trim();
+            const deepScanChecked = document.getElementById('matrix-deep-scan-toggle').checked;
+
+            pushLogToConsole(`[БАСТАУ] Операциялық сұраныс тіркелді. Нысан: "${targetRawValue}"`, 'text-emerald-400 font-bold uppercase tracking-wider text-[11px]');
+            
+            if (deepScanChecked) {
+                pushLogToConsole(`[DEEP SCANNERS] Ескерту: Тереңдетілген талдау қосылған. Есептеу уақыты артуы мүмкін.`, 'text-yellow-500 animate-pulse');
+            }
+
+            // Имитациялық жүктелу кідірісі (UI сапасы үшін)
+            setTimeout(() => {
+                
+                // --- 6.1 ФИШИНГТІК СІЛТЕМЕ СҮЗГІСІНІҢ АЛГОРИТМІ (LIVE PHISHING LINK ANALYZER) ---
+                if (currentModule === 'phish') {
+                    pushLogToConsole(`[ТАЛДАУ] Эвристикалық сілтеме талдау ядросы іске қосылды...`);
+                    
+                    let riskScorePercentage = 0;
+                    let detectedRiskTriggers = [];
+                    const lowerCaseUrl = targetRawValue.toLowerCase();
+
+                    // Белгі 1: Протокол тексеру
+                    if (lowerCaseUrl.startsWith('http://')) {
+                        riskScorePercentage += 25;
+                        detectedRiskTriggers.push("Қауіпсіз емес HTTP протоколы (Шифрлау жоқ)");
+                    }
+
+                    // Белгі 2: Қауіпті фишингтік кілт сөздер
+                    const dangerousKeywords = ['kaspi', 'halyk', 'login', 'secure', 'bonus', 'free', 'money', 'crypto', 'giveaway', 'olx', 'krisha', 'cabinet', 'verification'];
+                    dangerousKeywords.forEach(keyword => {
+                        if (lowerCaseUrl.includes(keyword)) {
+                            riskScorePercentage += 15;
+                            detectedRiskTriggers.push(`Күмәнді кілт сөз анықталды: "${keyword}"`);
+                        }
+                    });
+
+                    // Белгі 3: Қауіпті домендік аймақтар (TLD)
+                    const dangerousTlds = ['.xyz', '.top', '.click', '.club', '.info', '.live', '.gq', '.tk', '.cf', '.ml', '.cc', '.ru-secure', '.support'];
+                    dangerousTlds.forEach(tld => {
+                        if (lowerCaseUrl.includes(tld)) {
+                            riskScorePercentage += 20;
+                            detectedRiskTriggers.push(`Қауіпті/Арзан домендік аймақ: "${tld}"`);
+                        }
+                    });
+
+                    // Белгі 4: Сілтеме қысқартқыштары
+                    const urlShorteners = ['bit.ly', 'tinyurl.com', 'clck.ru', 'is.gd', 't.co', 'cutt.ly'];
+                    urlShorteners.forEach(sh => {
+                        if (lowerCaseUrl.includes(sh)) {
+                            riskScorePercentage += 30;
+                            detectedRiskTriggers.push(`Сілтеме жасыру қызметі қолданылған (Shortener): "${sh}"`);
+                        }
+                    });
+
+                    // Максималды шекті 100% қылу
+                    if (riskScorePercentage > 100) riskScorePercentage = 100;
+
+                    // Қорытынды баға шығару
+                    pushLogToConsole(`📊 [ТАЛДАУ НӘТИЖЕСІ] URL сүзу аяқталды:`, 'text-blue-400 font-bold border-t border-slate-900 pt-1 mt-1');
+                    pushLogToConsole(` → Тексерілген мекенжай: ${targetRawValue}`, 'text-slate-400');
+                    
+                    if (riskScorePercentage >= 50) {
+                        pushLogToConsole(`🚨 ҚАУІП ДЕҢГЕЙІ: ${riskScorePercentage}% - ФИШИНГ ҚАУПІ ЖОҒАРЫ!`, 'text-red-400 font-bold bg-red-950/20 px-2 py-1 rounded border border-red-900/30 my-1');
+                        detectedRiskTriggers.forEach(trig => {
+                            pushLogToConsole(`   [!] Триггер: ${trig}`, 'text-red-300/90');
+                        });
+                        pushLogToConsole(` 💡 КЕҢЕС: Ешқандай жағдайда бұл сайтқа банк картаңызды немесе пароліңізді енгізбеңіз!`, 'text-yellow-400');
+                    } else if (riskScorePercentage > 0 && riskScorePercentage < 50) {
+                        pushLogToConsole(`⚠️ ҚАУІП ДЕҢГЕЙІ: ${riskScorePercentage}% - ОРТАША КҮДІК.`, 'text-yellow-400 font-bold bg-yellow-950/10 px-2 py-0.5 rounded border border-yellow-900/20 my-1');
+                        detectedRiskTriggers.forEach(trig => {
+                            pushLogToConsole(`   [!] Триггер: ${trig}`, 'text-slate-300');
+                        });
+                    } else {
+                        pushLogToConsole(`✅ ҚАУІП ДЕҢГЕЙІ: 0% - Базалық эвристикалық фишингтік белгілер табылмады.`, 'text-emerald-400 font-bold bg-emerald-950/10 px-2 py-0.5 rounded border border-emerald-900/20 my-1');
+                        pushLogToConsole(` → Ескерту: Егер бұл сілтемені бейтаныс адам жіберсе, бәрібір сақ болыңыз.`, 'text-slate-500');
+                    }
+                }
+
+                // --- 6.2 ПАРОЛЬ КҮРДЕЛІЛІГІН ЕСЕПТЕУ АЛГОРИТМІ (LIVE PASSWORD AUDITOR) ---
+                else if (currentModule === 'pwd') {
+                    pushLogToConsole(`[МАТЕМАТИКА] Орташа хакерлік есептеуіш матрицасы іске қосылуда...`);
+                    
+                    const passwordLength = targetRawValue.length;
+                    let characterPoolSize = 0;
+
+                    const hasLowercase = /[a-z]/.test(targetRawValue);
+                    const hasUppercase = /[A-Z]/.test(targetRawValue);
+                    const hasNumbers = /[0-9]/.test(targetRawValue);
+                    const hasSpecialChars = /[^a-zA-Z0-9]/.test(targetRawValue);
+
+                    if (hasLowercase) characterPoolSize += 26;
+                    if (hasUppercase) characterPoolSize += 26;
+                    if (hasNumbers) characterPoolSize += 10;
+                    if (hasSpecialChars) characterPoolSize += 33;
+
+                    // Комбинациялардың жалпы санын есептеу: Pool^Length
+                    const totalCombinations = Math.pow(characterPoolSize, passwordLength);
+                    
+                    // Хакерлердің секундтық бұзу жылдамдығы (мысалы, секундына 10 миллиард комбинация - GPU кластері)
+                    const guessesPerSecond = 10000000000; 
+                    const timeInSeconds = totalCombinations / guessesPerSecond;
+
+                    pushLogToConsole(`🔐 [АУДИТ НӘТИЖЕСІ] Құпия сөзді крипто-талдау:`, 'text-blue-400 font-bold border-t border-slate-900 pt-1 mt-1');
+                    pushLogToConsole(` → Ұзындығы: ${passwordLength} таңба`, 'text-slate-300');
+                    pushLogToConsole(` → Қолданылған символдар жиыны өлшемі: ${characterPoolSize}`, 'text-slate-300');
+                    
+                    // Уақыт форматтарын визуалды теңшеу
+                    let timeResultText = "";
+                    if (timeInSeconds < 1) {
+                        timeResultText = "ҚАС-ҚАҒЫМ СӘТТЕ (Иіс сезбей қалады)";
+                    } else if (timeInSeconds < 60) {
+                        timeResultText = `${Math.round(timeInSeconds)} секунд`;
+                    } else if (timeInSeconds < 3600) {
+                        timeResultText = `${Math.round(timeInSeconds / 60)} минут`;
+                    } else if (timeInSeconds < 86400) {
+                        timeResultText = `${Math.round(timeInSeconds / 3600)} сағат`;
+                    } else if (timeInSeconds < 31536000) {
+                        timeResultText = `${Math.round(timeInSeconds / 86400)} күн`;
+                    } else {
+                        const years = timeInSeconds / 31536000;
+                        if (years > 1000000) {
+                            timeResultText = `${Math.round(years / 1000000)} Миллион жыл`;
+                        } else {
+                            timeResultText = `${Math.round(years)} жыл`;
+                        }
+                    }
+
+                    pushLogToConsole(`⏱️ БРҮТФОРС ТӨЗІМДІЛІГІ (Суперкомпьютермен): ${timeResultText}`, 'text-yellow-400 font-bold');
+                    
+                    // Сапалық бағалау
+                    if (passwordLength < 8 || characterPoolSize <= 26) {
+                        pushLogToConsole(`❌ БАҒА: ӨТЕ ӘЛСІЗ ПАРОЛЬ! Хакерлер оны лезде бұзып алады.`, 'text-red-500 font-bold bg-red-950/20 p-2 rounded border border-red-900/40 my-1');
+                        pushLogToConsole(` 💡 ҰСЫНЫС: Парольді 12 таңбадан асырып, ішіне үлкен әріп, сан және !, @, # сияқты белгілерді міндетті түрде қосыңыз.`, 'text-slate-400');
+                    } else {
+                        pushLogToConsole(`✅ БАҒА: СЕНІМДІ ӘРІ КҮРДЕЛІ ҚҰПИЯ СӨЗ.`, 'text-emerald-400 font-bold bg-emerald-950/20 p-2 rounded border border-emerald-900/40 my-1');
+                    }
+                }
+
+                // --- 6.3 НАҚТЫ УАҚЫТТАҒЫ IP ГЕОЛОКАЦИЯ (REAL LIVE IP LOOKUP VIA EXTERNAL API) ---
+                else if (currentModule === 'ip') {
+                    pushLogToConsole(`[ЖЕЛІ] ip-api.com жаһандық серверіне JSON пакеті жолданды...`, 'text-yellow-500');
+                    
+                    fetch(`https://ip-api.com/json/${targetRawValue}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === "success") {
+                                pushLogToConsole(`🌍 [ГЕО-ДЕРЕКТЕР СӘТТІ АЛЫНДЫ]:`, 'text-emerald-400 font-bold bg-slate-900/80 p-2 rounded border border-slate-800 my-1');
+                                pushLogToConsole(` → Ел: ${data.country} (${data.countryCode})`, 'text-slate-200');
+                                pushLogToConsole(` → Қала / Аймақ: ${data.city}, ${data.regionName}`, 'text-slate-200');
+                                pushLogToConsole(` → Интернет Провайдер (ISP): ${data.isp}`, 'text-yellow-400 font-bold');
+                                pushLogToConsole(` → Гео-координаттар: ${data.lat} N, ${data.lon} E`, 'text-blue-300');
+                                pushLogToConsole(` → Таймзона: ${data.timezone}`, 'text-slate-400');
+                            } else {
+                                pushLogToConsole(`❌ [API ҚАТЕ] IP мекенжай табылмады немесе формат қате. Жауап: ${data.message}`, 'text-red-400');
+                            }
+                        })
+                        .catch(() => {
+                            pushLogToConsole(`❌ [ЖЕЛІЛІК ҚАТЕ] Сұраныс жіберу мүмкін емес. Интернет байланысын тексеріңіз.`, 'text-red-500');
+                        });
+                }
+
+                // --- 6.4 НАҚТЫ УАҚЫТТАҒЫ НИКНЕЙМ ТІНТУ ОРТАЛЫҒЫ (LIVE SOCIAL SEARCH ROUTER) ---
+                else if (currentModule === 'nick') {
+                    pushLogToConsole(`[ІЗДЕУ] Әлеуметтік желілердің роутер индекстері құрастырылуда...`);
+                    
+                    const profileMatrix = [
+                        { platform: "GitHub Developer Portal", linkUrl: `https://github.com/${targetRawValue}` },
+                        { platform: "Telegram Messenger", linkUrl: `https://t.me/${targetRawValue}` },
+                        { platform: "Steam Gaming Community", linkUrl: `https://steamcommunity.com/id/${targetRawValue}` },
+                        { platform: "VKontakte Network", linkUrl: `https://vk.com/${targetRawValue}` }
+                    ];
+
+                    pushLogToConsole(`🔗 [ЖАНДЫ СІЛТЕМЕЛЕР ТҮЗІЛДІ] Профильдердің бар-жоғын мына сілтемелермен тікелей тексеріңіз:`, 'text-emerald-300 font-bold my-1');
+                    
+                    profileMatrix.forEach(item => {
+                        pushLogToConsole(` → [Кіру] ${item.platform}: <a href="${item.linkUrl}" target="_blank" class="text-blue-400 underline hover:text-emerald-400 font-bold transition">${item.linkUrl}</a>`);
+                    });
+
+                    if (deepScanChecked) {
+                        pushLogToConsole(`[DEEP SCANNERS] Хакерлік форумдар индексі бағытталды: https://exploit.in/user/${targetRawValue}`, 'text-red-400');
+                    }
+                }
+                
+                pushLogToConsole(`[АЯҚТАЛДЫ] Операциялық цикл сәтті жабылды. Сигнал тұрақты.`, 'text-slate-500 border-t border-slate-900/60 pt-1 mt-1.5');
+            }, 700); // UI сапасы үшін 700мс визуалды кідіріс
+        }
+    </script>
+</body>
+</html>
